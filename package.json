@@ -4,6 +4,7 @@
   "description": "backend for the microservice cart management of the Hela Ayu App",
   "main": "server.js",
   "scripts": {
+    "start": "nodemon backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
