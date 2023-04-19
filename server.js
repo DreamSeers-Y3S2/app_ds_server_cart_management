@@ -20,5 +20,5 @@ app.use("/cart", cartRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5003;
+const PORT = process.env.PORT || 5004;
 app.listen(PORT, console.log(`Cart Server Started on port ${PORT}..`));
