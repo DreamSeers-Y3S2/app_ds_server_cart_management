@@ -91,30 +91,54 @@ const updateCart = asyncHandler(async (req, res) => {
 
   const product = await Product.findOne({ productCode: cart.productCode });
   var previousQuantity = cart.quantity;
-  if (previousQuantity > quantity) {
-    product.quantity = product.quantity + 1;
-    const updatedProduct = await product.save();
-  } else if (previousQuantity < quantity) {
-    product.quantity = product.quantity - 1;
-    const updatedProduct = await product.save();
-  }
 
-  if (cart) {
-    cart.quantity = quantity;
+  if (product.quantity <= 0) {
+    if (previousQuantity > quantity) {
+      product.quantity = product.quantity + 1;
+      const updatedProduct = await product.save();
+      if (cart) {
+        cart.quantity = quantity;
 
-    const updatedCart = await cart.save();
-    res.json(updatedCart);
+        const updatedCart = await cart.save();
+        res.json(updatedCart);
+      } else {
+        res.status(404);
+        throw new Error("Item not found");
+      }
+    } else if (previousQuantity < quantity) {
+      throw new Error("Out of stock");
+    }
   } else {
-    res.status(404);
-    throw new Error("Item not found");
+    if (previousQuantity > quantity) {
+      product.quantity = product.quantity + 1;
+      const updatedProduct = await product.save();
+    } else if (previousQuantity < quantity) {
+      product.quantity = product.quantity - 1;
+      const updatedProduct = await product.save();
+    }
+
+    if (cart) {
+      cart.quantity = quantity;
+
+      const updatedCart = await cart.save();
+      res.json(updatedCart);
+    } else {
+      res.status(404);
+      throw new Error("Item not found");
+    }
   }
 });
 
 const deleteCartItem = asyncHandler(async (req, res) => {
   const cart = await Cart.findById(req.params.id);
 
+  const product = await Product.findOne({ productCode: cart.productCode });
+  const quantity = cart.quantity;
+
   if (cart) {
     await cart.remove();
+    product.quantity = product.quantity + quantity;
+    await product.save();
     res.json({ message: "Item Removed" });
   } else {
     res.status(404);
