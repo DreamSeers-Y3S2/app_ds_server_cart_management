@@ -1,5 +1,4 @@
 const express = require("express");
-
 const {
 	getCartItems,
 	addToCart,
@@ -11,6 +10,7 @@ const {
 const { protectCustomer } = require("../middleware/authCustomerMiddleware");
 const router = express.Router();
 
+// Routes for the cart management service
 router.route("/:id").get(protectCustomer, getCartItems);
 router.route("/total/:id").get(protectCustomer, getTotal);
 router.route("/add").post(protectCustomer, addToCart);

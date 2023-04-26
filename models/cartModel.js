@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
+// Cart model to store cart items
 const cartSchema = mongoose.Schema({
 	customer: {
 		type: mongoose.Schema.Types.ObjectId,
